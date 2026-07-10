@@ -508,7 +508,7 @@ main,
 
 .enterprise-card {
   min-height: 100%;
-  padding: 1.35rem;
+  overflow: hidden;
   border-radius: 24px;
   background: rgba(25, 0, 50, 0.52);
   border: 1px solid rgba(150, 0, 255, 0.32);
@@ -516,7 +516,39 @@ main,
   backdrop-filter: blur(18px);
 }
 
-.enterprise-card span {
+.enterprise-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(190, 132, 255, 0.24);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.enterprise-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 42%, rgba(8, 0, 16, 0.35));
+  pointer-events: none;
+}
+
+.enterprise-media img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.enterprise-card:hover .enterprise-media img {
+  transform: scale(1.045);
+}
+
+.enterprise-copy {
+  padding: 1.35rem;
+}
+
+.enterprise-number {
   display: inline-grid;
   place-items: center;
   width: 2.2rem;

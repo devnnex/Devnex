@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="title desc">
+  <title id="title">Automatizacion de procesos</title>
+  <desc id="desc">Flujos automatizados conectados a formularios, datos y dashboards.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#100020"/>
+      <stop offset=".5" stop-color="#2b0755"/>
+      <stop offset="1" stop-color="#06000e"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" x2="1">
+      <stop offset="0" stop-color="#7dd3fc"/>
+      <stop offset=".5" stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#d946ef"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="9" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="960" height="620" rx="38" fill="url(#bg)"/>
+  <path d="M0 450 C180 388 316 404 500 360 C652 323 780 302 960 242V620H0Z" fill="#080012" opacity=".84"/>
+  <g opacity=".2" stroke="#f4edff">
+    <path d="M92 108H868M92 182H868M92 256H868M92 330H868"/>
+    <path d="M158 78V390M282 78V390M406 78V390M530 78V390M654 78V390M778 78V390"/>
+  </g>
+  <g stroke="url(#card)" stroke-width="12" stroke-linecap="round" filter="url(#glow)" opacity=".88">
+    <path d="M240 210H390C450 210 450 310 510 310H664"/>
+    <path d="M240 410H390C452 410 450 310 510 310"/>
+    <path d="M666 310H780"/>
+  </g>
+  <g filter="url(#glow)">
+    <rect x="96" y="146" width="174" height="128" rx="24" fill="#130226" stroke="#f4edff" stroke-width="6"/>
+    <rect x="96" y="346" width="174" height="128" rx="24" fill="#130226" stroke="#f4edff" stroke-width="6"/>
+    <rect x="390" y="246" width="190" height="128" rx="24" fill="#130226" stroke="#f4edff" stroke-width="6"/>
+    <rect x="690" y="246" width="176" height="128" rx="24" fill="#130226" stroke="#f4edff" stroke-width="6"/>
+  </g>
+  <g fill="#f4edff" opacity=".8">
+    <rect x="132" y="184" width="102" height="12" rx="6"/>
+    <rect x="132" y="216" width="78" height="12" rx="6"/>
+    <rect x="132" y="384" width="102" height="12" rx="6"/>
+    <rect x="132" y="416" width="70" height="12" rx="6"/>
+    <rect x="432" y="284" width="98" height="12" rx="6"/>
+    <rect x="432" y="316" width="72" height="12" rx="6"/>
+    <rect x="732" y="284" width="92" height="12" rx="6"/>
+    <rect x="732" y="316" width="62" height="12" rx="6"/>
+  </g>
+  <g fill="url(#card)" filter="url(#glow)">
+    <circle cx="240" cy="210" r="18"/>
+    <circle cx="240" cy="410" r="18"/>
+    <circle cx="486" cy="310" r="22"/>
+    <circle cx="780" cy="310" r="18"/>
+  </g>
+  <g transform="translate(680 420)" stroke="#f4edff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" opacity=".86">
+    <path d="M62 0L74 40L116 40L82 64L96 104L62 80L28 104L42 64L8 40L50 40Z"/>
+  </g>
+</svg>

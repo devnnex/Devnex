@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="title desc">
+  <title id="title">Comercio y puntos de venta</title>
+  <desc id="desc">Sistema POS con caja, inventario y panel de ventas.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#120024"/>
+      <stop offset=".52" stop-color="#31085c"/>
+      <stop offset="1" stop-color="#07000f"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#7dd3fc"/>
+      <stop offset=".55" stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#d946ef"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="960" height="620" rx="38" fill="url(#bg)"/>
+  <path d="M0 468 C180 390 318 420 498 370 C660 325 780 314 960 258 L960 620H0Z" fill="#080012" opacity=".82"/>
+  <g opacity=".2" stroke="#f4edff">
+    <path d="M90 112H870M90 186H870M90 260H870M90 334H870"/>
+    <path d="M150 82V392M276 82V392M402 82V392M528 82V392M654 82V392M780 82V392"/>
+  </g>
+  <g transform="translate(168 132)" filter="url(#glow)">
+    <rect x="0" y="0" width="448" height="292" rx="28" fill="#130226" stroke="#f4edff" stroke-width="8" opacity=".94"/>
+    <rect x="30" y="36" width="388" height="184" rx="18" fill="url(#screen)" opacity=".82"/>
+    <rect x="74" y="248" width="300" height="28" rx="14" fill="#f4edff" opacity=".2"/>
+    <path d="M82 90H204M82 132H342M82 174H282" stroke="#fff" stroke-width="14" stroke-linecap="round" opacity=".74"/>
+    <rect x="300" y="76" width="70" height="70" rx="16" fill="#ffffff" opacity=".22"/>
+  </g>
+  <g transform="translate(552 330)">
+    <rect x="0" y="0" width="270" height="172" rx="28" fill="#130226" stroke="#f4edff" stroke-width="8"/>
+    <rect x="30" y="36" width="70" height="44" rx="10" fill="#a855f7"/>
+    <rect x="118" y="36" width="70" height="44" rx="10" fill="#7dd3fc"/>
+    <rect x="30" y="98" width="158" height="30" rx="10" fill="#f4edff" opacity=".18"/>
+    <circle cx="222" cy="80" r="22" fill="#d946ef" opacity=".9"/>
+  </g>
+  <g transform="translate(122 420)" fill="none" stroke="#f4edff" stroke-width="10" stroke-linecap="round" opacity=".78">
+    <path d="M0 0H165L142 85H34Z"/>
+    <circle cx="50" cy="118" r="14"/>
+    <circle cx="134" cy="118" r="14"/>
+    <path d="M18 0L0-45"/>
+  </g>
+  <g fill="#7dd3fc" filter="url(#glow)">
+    <circle cx="800" cy="120" r="5"/>
+    <circle cx="855" cy="260" r="4"/>
+    <circle cx="104" cy="164" r="4"/>
+    <circle cx="466" cy="492" r="5"/>
+  </g>
+</svg>
