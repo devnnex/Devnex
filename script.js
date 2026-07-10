@@ -139,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function closeMenu() {
+    if (!toggle || !navLinks) return;
     navLinks.classList.remove('active');
     toggle.classList.remove('active');
     toggle.setAttribute('aria-expanded', 'false');
@@ -146,44 +147,72 @@ document.addEventListener('DOMContentLoaded', () => {
     closeDropdown();
   }
 
-  toggle.addEventListener('click', () => {
-    const isOpen = navLinks.classList.toggle('active');
-    toggle.classList.toggle('active', isOpen);
-    toggle.setAttribute('aria-expanded', String(isOpen));
-    body.classList.toggle('menu-open', isOpen);
-  });
+  function openMenu() {
+    if (!toggle || !navLinks) return;
+    navLinks.classList.add('active');
+    toggle.classList.add('active');
+    toggle.setAttribute('aria-expanded', 'true');
+    body.classList.add('menu-open');
+  }
 
-  closeBtn.addEventListener('click', closeMenu);
+  if (toggle && navLinks) {
+    toggle.addEventListener('click', event => {
+      event.stopPropagation();
+      if (navLinks.classList.contains('active')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+
+    toggle.addEventListener('touchstart', event => {
+      event.stopPropagation();
+    }, { passive: true });
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', event => {
+      event.stopPropagation();
+      closeMenu();
+    });
+  }
 
   if (dropdown && dropdownToggle) {
     dropdownToggle.addEventListener('click', event => {
+      event.preventDefault();
       event.stopPropagation();
       const isOpen = dropdown.classList.toggle('open');
       dropdownToggle.setAttribute('aria-expanded', String(isOpen));
     });
   }
 
-  navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', event => {
-      const target = link.getAttribute('href');
-
-      if (!target || !target.startsWith('#')) {
-        closeMenu();
-        return;
-      }
-
-      event.preventDefault();
-      const section = document.querySelector(target);
-      closeMenu();
-
-      setTimeout(() => {
-        if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 240);
+  if (navLinks) {
+    navLinks.addEventListener('click', event => {
+      event.stopPropagation();
     });
-  });
+
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', event => {
+        const target = link.getAttribute('href');
+
+        if (!target || !target.startsWith('#')) {
+          closeMenu();
+          return;
+        }
+
+        event.preventDefault();
+        const section = document.querySelector(target);
+        closeMenu();
+
+        setTimeout(() => {
+          if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 240);
+      });
+    });
+  }
 
   document.addEventListener('click', event => {
-    if (navLinks.classList.contains('active') && !navLinks.contains(event.target) && !toggle.contains(event.target)) {
+    if (navLinks?.classList.contains('active') && !navLinks.contains(event.target) && !toggle?.contains(event.target)) {
       closeMenu();
     }
 
@@ -198,6 +227,170 @@ document.addEventListener('DOMContentLoaded', () => {
       closeModal();
     }
   });
+
+  /* ========== PRODUCTS SLIDER ========== */
+  const productsSlider = document.querySelector('[data-products-slider]');
+  const sliderTrack = productsSlider?.querySelector('.product-grid');
+  const sliderCards = sliderTrack ? Array.from(sliderTrack.querySelectorAll('.product-card')) : [];
+  const dotsWrap = productsSlider?.querySelector('.slider-dots');
+  const prevButton = productsSlider?.querySelector('.slider-prev');
+  const nextButton = productsSlider?.querySelector('.slider-next');
+
+  if (productsSlider && sliderTrack && sliderCards.length && dotsWrap && prevButton && nextButton) {
+    let currentPage = 0;
+    let pageCount = 1;
+    let visibleCards = 1;
+    let cardStep = 0;
+    let autoplay = null;
+    let resumeTimer = null;
+    let scrollTimer = null;
+    let pointerStartX = 0;
+    let pointerStartY = 0;
+    const autoplayDelay = 4600;
+    const userPauseDelay = 15000;
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(value, max));
+    }
+
+    function measureSlider() {
+      const firstCard = sliderCards[0];
+      const trackStyle = window.getComputedStyle(sliderTrack);
+      const gap = parseFloat(trackStyle.columnGap || trackStyle.gap || '0') || 0;
+      cardStep = firstCard.getBoundingClientRect().width + gap;
+      visibleCards = cardStep > 0 ? Math.max(1, Math.round((sliderTrack.clientWidth + gap) / cardStep)) : 1;
+      pageCount = Math.max(1, Math.ceil(sliderCards.length / visibleCards));
+      currentPage = clamp(currentPage, 0, pageCount - 1);
+      renderDots();
+      updateControls();
+      scrollToPage(currentPage, 'auto');
+    }
+
+    function pageToCardIndex(page) {
+      return clamp(page * visibleCards, 0, Math.max(0, sliderCards.length - visibleCards));
+    }
+
+    function scrollToPage(page, behavior = 'smooth') {
+      currentPage = clamp(page, 0, pageCount - 1);
+      const targetCard = sliderCards[pageToCardIndex(currentPage)];
+      if (!targetCard) return;
+      const targetLeft = targetCard.getBoundingClientRect().left - sliderTrack.getBoundingClientRect().left + sliderTrack.scrollLeft;
+      sliderTrack.scrollTo({ left: targetLeft, behavior });
+      updateControls();
+    }
+
+    function pageFromScroll() {
+      if (!cardStep) return 0;
+      const cardIndex = Math.round(sliderTrack.scrollLeft / cardStep);
+      return clamp(Math.round(cardIndex / visibleCards), 0, pageCount - 1);
+    }
+
+    function renderDots() {
+      dotsWrap.innerHTML = '';
+      dotsWrap.hidden = pageCount <= 1;
+      prevButton.hidden = pageCount <= 1;
+      nextButton.hidden = pageCount <= 1;
+
+      for (let page = 0; page < pageCount; page += 1) {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'slider-dot';
+        dot.setAttribute('aria-label', `Ver grupo ${page + 1} de sistemas`);
+        dot.addEventListener('click', () => {
+          pauseAutoplay();
+          scrollToPage(page);
+        });
+        dotsWrap.appendChild(dot);
+      }
+    }
+
+    function updateControls() {
+      dotsWrap.querySelectorAll('.slider-dot').forEach((dot, index) => {
+        const active = index === currentPage;
+        dot.classList.toggle('is-active', active);
+        dot.setAttribute('aria-current', active ? 'true' : 'false');
+      });
+    }
+
+    function stopAutoplay() {
+      if (autoplay) window.clearInterval(autoplay);
+      autoplay = null;
+    }
+
+    function startAutoplay() {
+      stopAutoplay();
+      if (pageCount <= 1 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      autoplay = window.setInterval(() => {
+        scrollToPage((currentPage + 1) % pageCount);
+      }, autoplayDelay);
+    }
+
+    function pauseAutoplay() {
+      stopAutoplay();
+      if (resumeTimer) window.clearTimeout(resumeTimer);
+      resumeTimer = window.setTimeout(startAutoplay, userPauseDelay);
+    }
+
+    prevButton.addEventListener('click', () => {
+      pauseAutoplay();
+      scrollToPage(currentPage - 1 < 0 ? pageCount - 1 : currentPage - 1);
+    });
+
+    nextButton.addEventListener('click', () => {
+      pauseAutoplay();
+      scrollToPage((currentPage + 1) % pageCount);
+    });
+
+    sliderTrack.addEventListener('pointerdown', event => {
+      pointerStartX = event.clientX;
+      pointerStartY = event.clientY;
+      productsSlider.dataset.dragging = 'false';
+      pauseAutoplay();
+    }, { passive: true });
+
+    sliderTrack.addEventListener('pointermove', event => {
+      if (Math.abs(event.clientX - pointerStartX) > 8 || Math.abs(event.clientY - pointerStartY) > 8) {
+        productsSlider.dataset.dragging = 'true';
+      }
+    }, { passive: true });
+
+    function resetDraggingFlag() {
+      window.setTimeout(() => {
+        productsSlider.dataset.dragging = 'false';
+      }, 80);
+    }
+
+    sliderTrack.addEventListener('pointerup', resetDraggingFlag, { passive: true });
+    sliderTrack.addEventListener('pointercancel', resetDraggingFlag, { passive: true });
+    sliderTrack.addEventListener('pointerleave', resetDraggingFlag, { passive: true });
+
+    sliderTrack.addEventListener('wheel', pauseAutoplay, { passive: true });
+    sliderTrack.addEventListener('touchstart', pauseAutoplay, { passive: true });
+
+    sliderTrack.addEventListener('scroll', () => {
+      if (scrollTimer) window.clearTimeout(scrollTimer);
+      scrollTimer = window.setTimeout(() => {
+        currentPage = pageFromScroll();
+        updateControls();
+      }, 80);
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      window.clearTimeout(scrollTimer);
+      scrollTimer = window.setTimeout(measureSlider, 160);
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopAutoplay();
+      } else {
+        startAutoplay();
+      }
+    });
+
+    measureSlider();
+    startAutoplay();
+  }
 
   /* ========== PREMIUM PRODUCT MODAL ========== */
   const modal = document.createElement('div');
@@ -259,6 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.product-card').forEach(card => {
     card.addEventListener('click', event => {
       if (event.target.closest('a')) return;
+      if (card.closest('[data-products-slider]')?.dataset.dragging === 'true') return;
       openModal(card);
     });
 
