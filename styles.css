@@ -1023,6 +1023,11 @@ main,
     transform: translateX(0);
   }
 
+  .nav-toggle.active {
+    opacity: 0;
+    pointer-events: none;
+  }
+
   .nav-links a,
   .nav-dropdown-toggle {
     width: 100%;
