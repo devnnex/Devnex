@@ -3,7 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Devnex — Soluciones Tecnológicas</title>
+  <meta name="description" content="Devnex desarrolla sistemas empresariales, sistemas de caja, pedidos en línea, restaurantes, lavaderos de autos y software a medida para empresas eléctricas, solares, hidrocarburos y petroleras." />
+  <meta name="theme-color" content="#08000f" />
+  <title>Devnex — Sistemas Empresariales Premium</title>
   <link rel="stylesheet" href="styles.css">
   <script defer src="script.js"></script>
 </head>
@@ -14,19 +16,34 @@
   <!-- HEADER -->
   <header class="navbar">
     <div class="nav-inner">
-      <div class="brand">
+      <a class="brand" href="#inicio" aria-label="Ir al inicio de Devnex">
         <img src="images/logo.png" alt="Devnex logo" class="logo" />
-        <div class="brand-text">
+        <span class="brand-text">
           <span class="brand-title">DEVNEX</span>
           <small class="brand-sub">Soluciones Tecnológicas</small>
-        </div>
-      </div>
+        </span>
+      </a>
 
-      <nav class="nav-links">
-        <button class="nav-close-btn" aria-label="Cerrar menú"></button>
+      <nav class="nav-links" aria-label="Navegación principal">
+        <button class="nav-close-btn" type="button" aria-label="Cerrar menú">&times;</button>
         <a href="#nomina">Nosotros</a>
+
+        <div class="nav-dropdown">
+          <button class="nav-dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+            Sistemas Empresariales
+          </button>
+          <div class="nav-dropdown-menu">
+            <a href="#sistemas-empresariales">Sistemas Empresariales</a>
+            <a href="#sistema-caja">Sistemas de caja</a>
+            <a href="#sistema-restaurantes">Sistemas para Restaurantes</a>
+            <a href="#sistema-lavadero">Sistemas para Lavadero de Autos</a>
+            <a href="#sistema-pedidos">Sistemas de Pedidos en Línea</a>
+          </div>
+        </div>
+
         <a href="#products">Sistemas</a>
-        <a href="https://www.instagram.com/devnex.bca" target="_blank" rel="noopener" class="cta">Contacto</a>
+        <a href="#sectores">Sectores</a>
+        <a href="#contacto" class="cta">Contacto</a>
       </nav>
 
       <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">
@@ -36,24 +53,26 @@
   </header>
 
   <!-- HERO -->
-  <main>
+  <main id="inicio">
     <section class="hero">
       <div class="hero-left">
-        <h1>Impulsamos tu empresa con tecnología de alto impacto</h1>
+        <span class="eyebrow">Software a medida para empresas modernas</span>
+        <h1>Impulsamos tu empresa con tecnología premium de alto impacto</h1>
         <p class="lead">
-          En <strong>Devnex</strong> creamos soluciones a medida: sistemas, automatizaciones y plataformas que optimizan procesos y aceleran resultados.
+          En <strong>Devnex</strong> creamos sistemas, automatizaciones y plataformas web que convierten procesos manuales en operaciones claras, rápidas y medibles.
         </p>
         <div class="hero-actions">
-          <a class="btn-primary" href="https://www.instagram.com/devnex.bca" target="_blank" rel="noopener">Conecta con Devnex</a>
+          <a class="btn-primary whatsapp-link" href="#" target="_blank" rel="noopener">Cotizar sistema</a>
           <a class="btn-ghost" href="#products">Ver sistemas</a>
         </div>
       </div>
       <div class="hero-right">
         <div class="card-hero">
+          <div class="hero-card-badge">Preview premium</div>
           <img src="images/sistema4.jpg" alt="Preview sistema destacado">
           <div class="card-body">
-            <h3>Sistema de Inventario</h3>
-            <p>Control de inventario para almacenes de Ropa y muchos más! Personalizable. Adaptable a moviles, con reporte de ventas, graficos, analisis. Sistema inteligente</p>
+            <h3>Sistema de Inventario Inteligente</h3>
+            <p>Control de productos, ventas, reportes, análisis y gestión móvil para negocios que necesitan orden operativo y decisiones con datos.</p>
           </div>
         </div>
       </div>
@@ -61,105 +80,204 @@
 
     <!-- ABOUT -->
     <section id="nomina" class="about-section">
-      <div class="container">
-        <h2>Soluciones tecnológicas que transforman</h2>
+      <div class="container narrow">
+        <span class="section-kicker">Ingeniería, diseño y automatización</span>
+        <h2>Soluciones tecnológicas que transforman la forma de trabajar</h2>
         <p>
-          Devnex es una empresa virtual dedicada al desarrollo de software personalizado, integración de APIs y automatización de procesos. Entregamos código limpio, escalable y soporte para desplegarlo en tu hosting.
+          Devnex desarrolla software personalizado, integra APIs y automatiza procesos para empresas que quieren vender mejor, controlar su operación y escalar sin depender de hojas de cálculo, mensajes dispersos o tareas repetitivas.
         </p>
+      </div>
+    </section>
+
+    <!-- ENTERPRISE SYSTEMS -->
+    <section id="sistemas-empresariales" class="enterprise-section">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-kicker">Sistemas de información</span>
+          <h2>Sistemas empresariales para operaciones exigentes</h2>
+          <p>
+            Diseñamos plataformas para empresas eléctricas, solares, de hidrocarburos, petroleras, comercio, servicios y más sectores que necesitan trazabilidad, reportes y control.
+          </p>
+        </div>
+
+        <div class="enterprise-grid">
+          <article class="enterprise-card">
+            <span>01</span>
+            <h3>Empresas eléctricas y solares</h3>
+            <p>Seguimiento de instalaciones, clientes, órdenes de servicio, mantenimientos, inventario técnico y reportes operativos.</p>
+          </article>
+          <article class="enterprise-card">
+            <span>02</span>
+            <h3>Hidrocarburos y petroleras</h3>
+            <p>Gestión documental, trazabilidad de procesos, aprobaciones, registros de campo, paneles y control de actividades.</p>
+          </article>
+          <article class="enterprise-card">
+            <span>03</span>
+            <h3>Comercio y puntos de venta</h3>
+            <p>Sistemas de caja, inventario, reportes de ventas, control de usuarios y cierre diario desde una interfaz simple.</p>
+          </article>
+          <article class="enterprise-card">
+            <span>04</span>
+            <h3>Automatización de procesos</h3>
+            <p>Convertimos tareas manuales en flujos digitales con formularios, notificaciones, bases de datos y dashboards.</p>
+          </article>
+        </div>
       </div>
     </section>
 
     <!-- PRODUCTS -->
     <section id="products" class="products-section">
       <div class="container">
-        <h2>Nuestros Sistemas</h2>
-        <p class="muted">Productos listos para implementar o adaptar según tus necesidades.</p>
+        <div class="section-heading centered">
+          <span class="section-kicker">Catálogo DEVNEX</span>
+          <h2>Nuestros Sistemas</h2>
+          <p class="muted">Productos listos para implementar o adaptar según tus necesidades.</p>
+        </div>
 
         <div class="product-grid">
-          <article class="product-card">
+          <article class="product-card" id="sistema-caja" data-category="Operación comercial" data-features="Caja registradora digital|Inventario y ventas|Cierres diarios y reportes|Usuarios y permisos">
+            <img src="images/sistema4.jpg" alt="Sistema de caja y punto de venta">
+            <div class="p-body">
+              <h3>Sistema de Caja / POS</h3>
+              <p>Controla ventas, caja, inventario, productos, usuarios, cierres y reportes desde una plataforma rápida y responsive.</p>
+              <div class="card-actions">
+                <button class="btn-sm details-button" type="button">Detalles</button>
+                <a class="btn-sm ghost whatsapp-link" href="#" target="_blank" rel="noopener">Contacto</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-category="Administración empresarial" data-features="Control de turnos|Cálculo de horas extras|Nómina y exportes|Panel administrativo">
             <img src="images/sistema1.png" alt="Liquidación y Control de Turnos">
             <div class="p-body">
               <h3>Sistema de Liquidación</h3>
-              <p>Control de fichadas, cálculo de horas extras y nómina. Panel administrativo y exportes CSV.</p>
+              <p>Control de fichadas, cálculo de horas extras, nómina, panel administrativo y exportes para empresas con equipos operativos.</p>
               <div class="card-actions">
-                <a class="btn-sm" href="#products">Detalles</a>
-                <a class="btn-sm ghost" href="https://www.instagram.com/devnex.bca" target="_blank">Contacto</a>
+                <button class="btn-sm details-button" type="button">Detalles</button>
+                <a class="btn-sm ghost whatsapp-link" href="#" target="_blank" rel="noopener">Contacto</a>
               </div>
             </div>
           </article>
 
-           <article class="product-card">
-            <img src="images/sistema2.png" alt="Liquidación y Control de Turnos">
+          <article class="product-card" id="sistema-pedidos" data-category="Ventas digitales" data-features="Catálogo online|Carrito de compras|Resumen automático a WhatsApp|Diseño responsive">
+            <img src="images/sistema2.png" alt="Sistema de pedidos en línea">
             <div class="p-body">
-              <h3>Pagina Web Heladeria</h3>
-              <p>Pagina web responsive, carrito de compras. Redirección a redes y envio automatico de resumen de compra a Whatsapp</p>
+              <h3>Sistema de Pedidos en Línea</h3>
+              <p>Catálogo web con carrito, pedido automático por WhatsApp, redes sociales y experiencia optimizada para celulares.</p>
               <div class="card-actions">
-                <a class="btn-sm" href="#products">Detalles</a>
-                <a class="btn-sm ghost" href="https://www.instagram.com/devnex.bca" target="_blank">Contacto</a>
+                <button class="btn-sm details-button" type="button">Detalles</button>
+                <a class="btn-sm ghost whatsapp-link" href="#" target="_blank" rel="noopener">Contacto</a>
               </div>
             </div>
           </article>
 
-           <article class="product-card">
-            <img src="images/sistema3.png" alt="Liquidación y Control de Turnos">
+          <article class="product-card" data-category="Agenda y servicios" data-features="Agenda por profesional|Disponibilidad por horario|Resumen a WhatsApp|Panel personalizable">
+            <img src="images/sistema3.png" alt="Sistema de citas para barberías">
             <div class="p-body">
-              <h3>Sistema Citas Barberias</h3>
-              <p>Personaliza tu barberia. Agendador con redirección a Whatsapp del barbero seleccionado, resumen del servicio. En base a hora y dispoinibilidad del barbero.</p>
+              <h3>Sistema Citas Barberías</h3>
+              <p>Agendador con disponibilidad por barbero, resumen del servicio y redirección a WhatsApp del profesional seleccionado.</p>
               <div class="card-actions">
-                <a class="btn-sm" href="#products">Detalles</a>
-                <a class="btn-sm ghost" href="https://www.instagram.com/devnex.bca" target="_blank">Contacto</a>
+                <button class="btn-sm details-button" type="button">Detalles</button>
+                <a class="btn-sm ghost whatsapp-link" href="#" target="_blank" rel="noopener">Contacto</a>
               </div>
             </div>
           </article>
 
-           <article class="product-card">
-            <img src="images/sistema4.jpg" alt="Liquidación y Control de Turnos">
+          <article class="product-card" data-category="Inventario inteligente" data-features="Productos y categorías|Reportes de ventas|Gráficos y análisis|Adaptable a móviles">
+            <img src="images/sistema4.jpg" alt="Sistema de inventario">
             <div class="p-body">
               <h3>Sistema de Inventario</h3>
-              <p>Control de inventario para almacenes de Ropa y muchos más! Personalizable. Adaptable a moviles, con reporte de ventas, graficos, analisis. Sistema inteligente</p>
+              <p>Control de inventario para almacenes, ropa, comercio y más negocios, con reportes, gráficos y análisis inteligente.</p>
               <div class="card-actions">
-                <a class="btn-sm" href="#products">Detalles</a>
-                <a class="btn-sm ghost" href="https://www.instagram.com/devnex.bca" target="_blank">Contacto</a>
+                <button class="btn-sm details-button" type="button">Detalles</button>
+                <a class="btn-sm ghost whatsapp-link" href="#" target="_blank" rel="noopener">Contacto</a>
               </div>
             </div>
           </article>
 
-           <article class="product-card">
-            <img src="images/sistema6.png" alt="Liquidación y Control de Turnos">
+          <article class="product-card" id="sistema-restaurantes" data-category="Restaurantes y cocina" data-features="Pedidos por mesa|Control de productos|Gestión de consumo|Diseño adaptable a móviles">
+            <img src="images/sistema6.png" alt="Sistema para restaurantes">
             <div class="p-body">
               <h3>Sistema para Restaurantes</h3>
-              <p>Gestión de pedidos de mesas y control de productos consumidos. Personalizable. Adaptable a móviles. Funcionamiento en LocalStorage. Personalizable a tu negocio.</p>
+              <p>Gestión de mesas, pedidos, productos consumidos y operación diaria con una interfaz clara para equipos de restaurante.</p>
               <div class="card-actions">
-                <a class="btn-sm" href="#products">Detalles</a>
-                <a class="btn-sm ghost" href="https://www.instagram.com/devnex.bca" target="_blank">Contacto</a>
+                <button class="btn-sm details-button" type="button">Detalles</button>
+                <a class="btn-sm ghost whatsapp-link" href="#" target="_blank" rel="noopener">Contacto</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card">
-            <img src="images/sistema5.jpg" alt="Sistema de Reservas">
+          <article class="product-card" id="sistema-lavadero" data-category="Lavadero de autos" data-features="Agenda de servicios|Control de vehículos|Estados del proceso|Resumen para cliente">
+            <img src="images/sistema7.jpg" alt="Sistema para lavadero de autos">
+            <div class="p-body">
+              <h3>Sistema para Lavadero de Autos</h3>
+              <p>Agenda servicios, registra vehículos, controla estados de lavado, precios, clientes y flujo operativo del lavadero.</p>
+              <div class="card-actions">
+                <button class="btn-sm details-button" type="button">Detalles</button>
+                <a class="btn-sm ghost whatsapp-link" href="#" target="_blank" rel="noopener">Contacto</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-category="Reservas y agenda" data-features="Reservas por fecha|Disponibilidad por servicio|Resumen automático|Negocio personalizable">
+            <img src="images/sistema5.jpg" alt="Sistema de reservas">
             <div class="p-body">
               <h3>Sistema de Reservas</h3>
-              <p>Personaliza tu barberia. Agendador con redirección a Whatsapp del barbero seleccionado, resumen del servicio. En base a hora y dispoinibilidad del barbero.</p>
+              <p>Agenda para negocios de servicios con horarios, disponibilidad, confirmaciones y resumen directo para atención al cliente.</p>
               <div class="card-actions">
-                <a class="btn-sm" href="#products">Detalles</a>
-                <a class="btn-sm ghost" href="https://www.instagram.com/devnex.bca" target="_blank">Contacto</a>
+                <button class="btn-sm details-button" type="button">Detalles</button>
+                <a class="btn-sm ghost whatsapp-link" href="#" target="_blank" rel="noopener">Contacto</a>
               </div>
             </div>
           </article>
 
-          <article class="product-card">
-            <img src="images/sistema6.jpg" alt="Panel Admin">
+          <article class="product-card" data-category="Servicios operativos" data-features="Reserva de servicios|Asignación de personal|Resumen del trabajo|Control de disponibilidad">
+            <img src="images/sistema6.jpg" alt="Sistema de limpieza reservas">
             <div class="p-body">
               <h3>Sistema de Limpieza Reservas</h3>
-              <p>Agendador con redirección a Whatsapp del servicio seleccionado, resumen del trabajo. En base a hora y disponibilidad del personal de limpieza.</p>
+              <p>Agendador con servicio seleccionado, resumen del trabajo, disponibilidad del personal y contacto directo por WhatsApp.</p>
               <div class="card-actions">
-                <a class="btn-sm" href="#products">Detalles</a>
-                <a class="btn-sm ghost" href="https://www.instagram.com/devnex.bca" target="_blank">Contacto</a>
+                <button class="btn-sm details-button" type="button">Detalles</button>
+                <a class="btn-sm ghost whatsapp-link" href="#" target="_blank" rel="noopener">Contacto</a>
               </div>
             </div>
           </article>
         </div>
+      </div>
+    </section>
+
+    <!-- SECTORS -->
+    <section id="sectores" class="sectors-section">
+      <div class="container">
+        <div class="section-heading centered">
+          <span class="section-kicker">Sectores que atendemos</span>
+          <h2>Software para negocios locales y empresas con operación crítica</h2>
+        </div>
+        <div class="sector-pills">
+          <span>Empresas eléctricas</span>
+          <span>Energía solar</span>
+          <span>Hidrocarburos</span>
+          <span>Petroleras</span>
+          <span>Restaurantes</span>
+          <span>Lavaderos de autos</span>
+          <span>Comercio</span>
+          <span>Servicios</span>
+          <span>Pedidos en línea</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contacto" class="contact-section">
+      <div class="container contact-panel">
+        <div>
+          <span class="section-kicker">Implementación profesional</span>
+          <h2>Hablemos del sistema que tu empresa necesita</h2>
+          <p>
+            Cuéntanos qué proceso quieres vender, controlar o automatizar. Te orientamos para convertirlo en una plataforma clara, elegante y lista para crecer.
+          </p>
+        </div>
+        <a class="btn-primary whatsapp-link" href="#" target="_blank" rel="noopener">Solicitar asesoría</a>
       </div>
     </section>
   </main>
@@ -167,12 +285,32 @@
   <!-- FOOTER -->
   <footer class="footer">
     <div class="container footer-inner">
-      <div>
-        <strong>Devnex</strong> — Soluciones tecnológicas para empresas.
-        <div class="muted small">© 2025 Devnex. Todos los derechos reservados.</div>
+      <div class="footer-brand">
+        <div class="footer-logo-row">
+          <img src="images/logo.png" alt="Devnex logo" class="footer-logo" />
+          <div>
+            <strong>Devnex</strong>
+            <span>Soluciones tecnológicas premium</span>
+          </div>
+        </div>
+        <p>Desarrollo de software, sistemas empresariales, automatización y plataformas web para empresas que quieren operar con más control.</p>
+        <div class="muted small">© <span id="year">2026</span> Devnex. Todos los derechos reservados.</div>
       </div>
-      <div class="footer-links">
-        <a href="https://www.instagram.com/devnex.bca" target="_blank">@devnex.bca</a>
+
+      <div class="footer-col">
+        <strong>Sistemas</strong>
+        <a href="#sistemas-empresariales">Empresariales</a>
+        <a href="#sistema-caja">Caja / POS</a>
+        <a href="#sistema-restaurantes">Restaurantes</a>
+        <a href="#sistema-lavadero">Lavadero de autos</a>
+        <a href="#sistema-pedidos">Pedidos en línea</a>
+      </div>
+
+      <div class="footer-col">
+        <strong>Contacto</strong>
+        <a class="whatsapp-link" href="#" target="_blank" rel="noopener">WhatsApp DEVNEX</a>
+        <a href="https://www.instagram.com/devnex.bca" target="_blank" rel="noopener">@devnex.bca</a>
+        <a href="#contacto">Solicitar asesoría</a>
       </div>
     </div>
   </footer>
