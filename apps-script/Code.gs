@@ -55,6 +55,7 @@ function doPost(e) {
     ensureHeaders_(sheet);
 
     const data = readPayload_(e);
+    validateLead_(data);
     const row = [
       new Date(),
       data.nombre,
@@ -72,12 +73,21 @@ function doPost(e) {
       data.user_agent
     ];
 
-    sheet.appendRow(row);
+    const lock = LockService.getScriptLock();
+    if (!lock.tryLock(10000)) throw new Error('The service is busy. Please try again.');
+
+    let rowNumber;
+    try {
+      rowNumber = sheet.getLastRow() + 1;
+      sheet.getRange(rowNumber, 1, 1, row.length).setValues([row]);
+    } finally {
+      lock.releaseLock();
+    }
 
     return json_({
       ok: true,
       message: 'Lead saved',
-      row: sheet.getLastRow()
+      row: rowNumber
     });
   } catch (error) {
     return json_({
@@ -138,8 +148,20 @@ function readPayload_(e) {
   };
 }
 
+function validateLead_(data) {
+  const required = ['nombre', 'empresa', 'email', 'telefono', 'interes', 'mensaje', 'consentimiento'];
+  const missing = required.filter(function(field) {
+    return !data[field];
+  });
+
+  if (missing.length) {
+    throw new Error('Missing required fields: ' + missing.join(', '));
+  }
+}
+
 function clean_(value) {
-  return String(value || '').trim();
+  const text = String(value || '').trim();
+  return /^[=+\-@]/.test(text) ? "'" + text : text;
 }
 
 function json_(payload) {
