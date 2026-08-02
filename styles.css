@@ -58,6 +58,18 @@ textarea {
   scroll-margin-top: 112px;
 }
 
+@supports (content-visibility: auto) {
+  .about-section,
+  .ai-section,
+  .enterprise-section,
+  .products-section,
+  .sectors-section,
+  .contact-section {
+    content-visibility: auto;
+    contain-intrinsic-size: 720px;
+  }
+}
+
 .container {
   width: min(1180px, calc(100% - 40px));
   margin: auto;
@@ -1292,6 +1304,74 @@ main,
   background: rgba(255, 255, 255, 0.05);
   border-radius: 14px;
   padding: 0.68rem 0.8rem;
+}
+
+.lead-success-modal {
+  background: rgba(5, 0, 12, 0.78);
+}
+
+.lead-success-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  max-width: 520px;
+  width: min(94vw, 520px);
+  padding: 2rem;
+  border-radius: 24px;
+  background:
+    linear-gradient(145deg, rgba(32, 7, 61, 0.98), rgba(10, 1, 24, 0.98)),
+    #12051f;
+}
+
+.lead-success-mark {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 1rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #22c55e, #14b8a6);
+  color: #06130c;
+  font-size: 1.65rem;
+  font-weight: 900;
+  box-shadow: 0 18px 42px rgba(20, 184, 166, 0.26);
+}
+
+.lead-success-message {
+  margin-bottom: 1.1rem;
+}
+
+.lead-success-details {
+  width: 100%;
+  margin: 0.15rem 0 1.35rem;
+  padding: 1rem;
+  border: 1px solid rgba(190, 132, 255, 0.28);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.lead-success-details span {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #bea9f4;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lead-success-details strong {
+  display: block;
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.lead-success-action {
+  width: 100%;
+  border: 0;
+  cursor: pointer;
 }
 
 /* === MOBILE MENU === */

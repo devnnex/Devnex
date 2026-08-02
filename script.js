@@ -1,3 +1,5 @@
+const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7Yia2OI3hmz5vYXCJ4a5h708iTcUNReGbnk4AQFZeL40XZqFu_sBJSYC577nV3CI7/exec';
+
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-ready');
 
@@ -26,11 +28,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ========== PARTICLES BACKGROUND ========== */
   const canvas = document.getElementById('particles');
-  if (canvas && canvas.getContext) {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const lightDevice = window.innerWidth <= 760 || navigator.hardwareConcurrency <= 4;
+
+  if (canvas && canvas.getContext && !reduceMotion && !lightDevice) {
     const ctx = canvas.getContext('2d');
     let w = window.innerWidth;
     let h = window.innerHeight;
     let particles = [];
+    let animationId = null;
+    let resizeTimer = null;
+    let lastFrame = 0;
+    const frameInterval = 1000 / 30;
 
     function rand(min, max) {
       return Math.random() * (max - min) + min;
@@ -81,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function init() {
       particles = [];
-      const count = Math.max(18, Math.round((w * h) / 90000));
+      const count = Math.min(28, Math.max(12, Math.round((w * h) / 130000)));
       for (let i = 0; i < count; i++) particles.push(new Particle());
     }
 
@@ -90,19 +99,40 @@ document.addEventListener('DOMContentLoaded', () => {
       init();
     }
 
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(resize, 180);
+    }, { passive: true });
     resize();
 
-    function frame() {
+    function frame(now) {
+      if (document.hidden) {
+        animationId = null;
+        return;
+      }
+
+      if (now - lastFrame < frameInterval) {
+        animationId = requestAnimationFrame(frame);
+        return;
+      }
+
+      lastFrame = now;
       ctx.clearRect(0, 0, w, h);
       for (const p of particles) {
         p.move();
         p.draw();
       }
-      requestAnimationFrame(frame);
+      animationId = requestAnimationFrame(frame);
     }
 
-    frame();
+    function startParticles() {
+      if (!animationId) animationId = requestAnimationFrame(frame);
+    }
+
+    document.addEventListener('visibilitychange', startParticles);
+    startParticles();
+  } else if (canvas) {
+    canvas.hidden = true;
   }
 
   /* ========== FADE-IN ON SCROLL ========== */
@@ -319,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startAutoplay() {
       stopAutoplay();
-      if (pageCount <= 1 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (pageCount <= 1 || reduceMotion || lightDevice) return;
       autoplay = window.setInterval(() => {
         scrollToPage((currentPage + 1) % pageCount);
       }, autoplayDelay);
@@ -470,6 +500,51 @@ document.addEventListener('DOMContentLoaded', () => {
     if (event.target === modal) closeModal();
   });
 
+  const leadSuccessModal = document.createElement('div');
+  leadSuccessModal.classList.add('modal', 'lead-success-modal');
+  leadSuccessModal.setAttribute('aria-hidden', 'true');
+  leadSuccessModal.innerHTML = `
+    <div class="modal-content lead-success-content" role="dialog" aria-modal="true" aria-labelledby="lead-success-title">
+      <button class="modal-close lead-success-close" type="button" aria-label="Cerrar confirmacion">&times;</button>
+      <div class="lead-success-mark" aria-hidden="true">&#10003;</div>
+      <span class="modal-badge">Registro exitoso</span>
+      <h3 class="modal-title" id="lead-success-title">Solicitud recibida</h3>
+      <p class="modal-desc lead-success-message">Recibimos tus datos correctamente. Estamos registrando la cita y enviando la confirmacion a tu correo.</p>
+      <div class="lead-success-details">
+        <span>Fecha y franja</span>
+        <strong></strong>
+      </div>
+      <button class="btn-primary lead-success-action" type="button">Entendido</button>
+    </div>
+  `;
+  document.body.appendChild(leadSuccessModal);
+
+  const leadSuccessClose = leadSuccessModal.querySelector('.lead-success-close');
+  const leadSuccessAction = leadSuccessModal.querySelector('.lead-success-action');
+  const leadSuccessDetails = leadSuccessModal.querySelector('.lead-success-details strong');
+
+  function closeLeadSuccessModal() {
+    leadSuccessModal.classList.remove('open');
+    leadSuccessModal.setAttribute('aria-hidden', 'true');
+    body.classList.remove('modal-open');
+  }
+
+  function showLeadSuccessModal(data) {
+    const date = data.get('fecha_reunion') || 'Fecha por confirmar';
+    const time = data.get('hora_reunion') || 'Franja por confirmar';
+    leadSuccessDetails.textContent = `${date} - ${time}`;
+    leadSuccessModal.classList.add('open');
+    leadSuccessModal.setAttribute('aria-hidden', 'false');
+    body.classList.add('modal-open');
+    leadSuccessAction.focus();
+  }
+
+  leadSuccessClose.addEventListener('click', closeLeadSuccessModal);
+  leadSuccessAction.addEventListener('click', closeLeadSuccessModal);
+  leadSuccessModal.addEventListener('click', event => {
+    if (event.target === leadSuccessModal) closeLeadSuccessModal();
+  });
+
   /* ========== PROSPECT FORM ========== */
   const leadForm = document.getElementById('lead-form');
   const formStatus = document.getElementById('form-status');
@@ -495,7 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ].join('\n');
   }
 
-  leadForm?.addEventListener('submit', async event => {
+  leadForm?.addEventListener('submit', event => {
     event.preventDefault();
     setFormStatus('');
 
@@ -506,7 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const data = new FormData(leadForm);
-    const endpoint = leadForm.dataset.endpoint?.trim();
+    const endpoint = GOOGLE_APPS_SCRIPT_URL.trim() || leadForm.dataset.endpoint?.trim();
     const submitButton = leadForm.querySelector('.form-submit');
     data.set('pagina', window.location.href);
     data.set('user_agent', navigator.userAgent);
@@ -519,25 +594,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     submitButton.disabled = true;
     submitButton.textContent = 'Enviando...';
+    showLeadSuccessModal(data);
+    setFormStatus('');
+    leadForm.reset();
 
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        body: new URLSearchParams(data)
-      });
-
-      if (!response.ok) throw new Error('No se pudo guardar el prospecto.');
-      const result = await response.json();
-      if (!result.ok) throw new Error(result.message || 'No se pudo guardar el prospecto.');
-
-      setFormStatus('Solicitud recibida. Te contactaremos para coordinar la reunión.', 'is-success');
-      leadForm.reset();
-    } catch (error) {
-      window.open(whatsappUrl(leadWhatsappMessage(data)), '_blank', 'noopener');
-      setFormStatus('No pudimos guardar la solicitud. Abrimos WhatsApp como canal de respaldo.', 'is-error');
-    } finally {
+    window.setTimeout(() => {
       submitButton.disabled = false;
       submitButton.textContent = 'Enviar solicitud';
-    }
+    }, 700);
+
+    fetch(endpoint, {
+      method: 'POST',
+      body: new URLSearchParams(data),
+      keepalive: true
+    })
+      .then(async response => {
+        if (!response.ok) throw new Error('No se pudo guardar el prospecto.');
+        const result = await response.json();
+        if (!result.ok) throw new Error(result.message || 'No se pudo guardar el prospecto.');
+      })
+      .catch(error => {
+        console.error('Devnex form submit failed:', error);
+      });
   });
 });
