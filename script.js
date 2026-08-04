@@ -1,4 +1,4 @@
-const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7Yia2OI3hmz5vYXCJ4a5h708iTcUNReGbnk4AQFZeL40XZqFu_sBJSYC577nV3CI7/exec';
+const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyMTSNwbkp123BEf2R4yIOdm_J4VyXd8i2UrGpoZQL33h5NsHLHwjdefwzlC-To0rNx/exec';
 
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-ready');
@@ -255,6 +255,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (event.key === 'Escape') {
       closeMenu();
       closeModal();
+      closeLeadSuccessModal();
+      closePartnerSuccessModal();
     }
   });
 
@@ -615,6 +617,117 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .catch(error => {
         console.error('Devnex form submit failed:', error);
+      });
+  });
+
+  /* ========== PARTNER FORM ========== */
+  const partnerForm = document.getElementById('partner-form');
+  const partnerFormStatus = document.getElementById('partner-form-status');
+  const partnerSuccessModal = document.createElement('div');
+  partnerSuccessModal.classList.add('modal', 'lead-success-modal', 'partner-success-modal');
+  partnerSuccessModal.setAttribute('aria-hidden', 'true');
+  partnerSuccessModal.innerHTML = `
+    <div class="modal-content lead-success-content" role="dialog" aria-modal="true" aria-labelledby="partner-success-title">
+      <button class="modal-close partner-success-close" type="button" aria-label="Cerrar confirmación">&times;</button>
+      <div class="lead-success-mark partner-success-mark" aria-hidden="true">&#10003;</div>
+      <span class="modal-badge">Bienvenido al programa</span>
+      <h3 class="modal-title" id="partner-success-title">¡Gracias por unirte como partner!</h3>
+      <p class="modal-desc lead-success-message">Guardamos tu solicitud y estamos enviando un correo de bienvenida a <strong class="partner-success-email"></strong>. Pronto te contactaremos para conversar sobre el programa.</p>
+      <button class="btn-primary partner-success-action" type="button">Entendido</button>
+    </div>
+  `;
+  document.body.appendChild(partnerSuccessModal);
+
+  const partnerSuccessClose = partnerSuccessModal.querySelector('.partner-success-close');
+  const partnerSuccessAction = partnerSuccessModal.querySelector('.partner-success-action');
+  const partnerSuccessEmail = partnerSuccessModal.querySelector('.partner-success-email');
+
+  function setPartnerFormStatus(message, type = '') {
+    if (!partnerFormStatus) return;
+    partnerFormStatus.textContent = message;
+    partnerFormStatus.className = `form-status ${type}`.trim();
+  }
+
+  function closePartnerSuccessModal() {
+    partnerSuccessModal.classList.remove('open');
+    partnerSuccessModal.setAttribute('aria-hidden', 'true');
+    body.classList.remove('modal-open');
+  }
+
+  function showPartnerSuccessModal(data) {
+    partnerSuccessEmail.textContent = data.get('email') || 'tu correo';
+    partnerSuccessModal.classList.add('open');
+    partnerSuccessModal.setAttribute('aria-hidden', 'false');
+    body.classList.add('modal-open');
+    partnerSuccessAction.focus();
+  }
+
+  function partnerWhatsappMessage(data) {
+    return [
+      'Hola Devnex, quiero registrarme como partner.',
+      '',
+      `Nombre: ${data.get('nombre') || ''}`,
+      `Email: ${data.get('email') || ''}`,
+      `Teléfono: ${data.get('telefono') || ''}`,
+      `Ubicación: ${data.get('ubicacion') || ''}`,
+      `Empresa u ocupación: ${data.get('empresa') || ''}`,
+      `Perfil: ${data.get('perfil_partner') || ''}`,
+      '',
+      `Oportunidades que podría referir: ${data.get('mensaje') || ''}`
+    ].join('\n');
+  }
+
+  partnerSuccessClose.addEventListener('click', closePartnerSuccessModal);
+  partnerSuccessAction.addEventListener('click', closePartnerSuccessModal);
+  partnerSuccessModal.addEventListener('click', event => {
+    if (event.target === partnerSuccessModal) closePartnerSuccessModal();
+  });
+
+  partnerForm?.addEventListener('submit', event => {
+    event.preventDefault();
+    setPartnerFormStatus('');
+
+    if (!partnerForm.checkValidity()) {
+      partnerForm.reportValidity();
+      setPartnerFormStatus('Completa los campos requeridos para enviar tu solicitud.', 'is-error');
+      return;
+    }
+
+    const data = new FormData(partnerForm);
+    const endpoint = GOOGLE_APPS_SCRIPT_URL.trim() || partnerForm.dataset.endpoint?.trim();
+    const submitButton = partnerForm.querySelector('.form-submit');
+    data.set('pagina', window.location.href);
+    data.set('user_agent', navigator.userAgent);
+
+    if (!endpoint) {
+      window.open(whatsappUrl(partnerWhatsappMessage(data)), '_blank', 'noopener');
+      setPartnerFormStatus('Abrimos WhatsApp para completar tu registro con el equipo Devnex.', 'is-success');
+      return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = 'Enviando...';
+
+    fetch(endpoint, {
+      method: 'POST',
+      body: new URLSearchParams(data),
+      keepalive: true
+    })
+      .then(async response => {
+        if (!response.ok) throw new Error('No se pudo guardar el partner.');
+        const result = await response.json();
+        if (!result.ok) throw new Error(result.message || 'No se pudo guardar el partner.');
+
+        showPartnerSuccessModal(data);
+        partnerForm.reset();
+      })
+      .catch(error => {
+        console.error('Devnex partner form submit failed:', error);
+        setPartnerFormStatus('No pudimos completar el registro. Revisa tu conexión e inténtalo de nuevo o escríbenos por WhatsApp.', 'is-error');
+      })
+      .finally(() => {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Enviar mi solicitud';
       });
   });
 });

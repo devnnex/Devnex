@@ -64,6 +64,7 @@ textarea {
   .enterprise-section,
   .products-section,
   .sectors-section,
+  .partners-section,
   .contact-section {
     content-visibility: auto;
     contain-intrinsic-size: 720px;
@@ -470,6 +471,7 @@ main,
 .enterprise-section,
 .products-section,
 .sectors-section,
+.partners-section,
 .contact-section {
   padding: 5.5rem 2rem;
 }
@@ -873,6 +875,227 @@ main,
   padding: 0.75rem 1rem;
   font-weight: 700;
   box-shadow: inset 0 0 30px rgba(168, 85, 247, 0.08);
+}
+
+/* === PARTNERS === */
+.partners-section {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.075);
+  background:
+    radial-gradient(circle at 88% 18%, rgba(125, 211, 252, 0.11), transparent 27rem),
+    radial-gradient(circle at 8% 72%, rgba(192, 38, 211, 0.13), transparent 28rem);
+}
+
+.partners-section::before {
+  content: "";
+  position: absolute;
+  inset: 4rem auto auto 50%;
+  width: min(820px, 86vw);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(216, 180, 254, 0.5), transparent);
+  transform: translateX(-50%);
+  box-shadow: 0 0 38px rgba(168, 85, 247, 0.34);
+}
+
+.partners-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+  align-items: end;
+  gap: clamp(1.5rem, 4vw, 4.5rem);
+  margin-bottom: 2rem;
+}
+
+.partners-copy {
+  max-width: 760px;
+}
+
+.partners-copy h1 {
+  max-width: 720px;
+  margin-bottom: 1rem;
+  color: #fff;
+  font-size: clamp(2.25rem, 4.8vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.partners-copy p {
+  max-width: 700px;
+  color: #c8bfd3;
+  font-size: 1.04rem;
+  line-height: 1.75;
+}
+
+.partner-commission-card {
+  position: relative;
+  overflow: hidden;
+  padding: 1.55rem;
+  border: 1px solid rgba(154, 230, 255, 0.2);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(125, 211, 252, 0.1), rgba(168, 85, 247, 0.13));
+  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.28), inset 0 1px rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(24px);
+}
+
+.partner-commission-card::after {
+  content: "";
+  position: absolute;
+  top: -70px;
+  right: -50px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(125, 211, 252, 0.18);
+  filter: blur(24px);
+}
+
+.partner-card-label,
+.partner-form-eyebrow {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #b9edff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.partner-commission-card strong {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin-bottom: 0.7rem;
+  color: #fff;
+  font-size: 1.18rem;
+  line-height: 1.35;
+}
+
+.partner-commission-card p {
+  position: relative;
+  z-index: 1;
+  color: #c8bfd3;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.partner-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.partner-steps article {
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+}
+
+.partner-steps article > span {
+  display: inline-grid;
+  place-items: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(216, 180, 254, 0.24);
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.82), rgba(192, 38, 211, 0.82));
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.partner-steps h2 {
+  margin-bottom: 0.45rem;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.partner-steps p {
+  color: #bdb5c9;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.partner-panel {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.68fr) minmax(520px, 1.32fr);
+  align-items: start;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  padding: clamp(1.4rem, 3vw, 2.5rem);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(33, 21, 53, 0.72), rgba(11, 8, 19, 0.88));
+  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.3), inset 0 1px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(24px) saturate(130%);
+}
+
+.partner-form-copy {
+  position: sticky;
+  top: 120px;
+  padding-top: 0.4rem;
+}
+
+.partner-form-copy h2 {
+  margin-bottom: 0.8rem;
+  color: #fff;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  line-height: 1.08;
+}
+
+.partner-form-copy > p {
+  color: #c8bfd3;
+  line-height: 1.72;
+}
+
+.partner-trust-note {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 0.75rem;
+  margin-top: 1.4rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.partner-trust-note > span {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #071016;
+  background: #9ae6ff;
+  font-weight: 950;
+  box-shadow: 0 0 24px rgba(125, 211, 252, 0.32);
+}
+
+.partner-trust-note p {
+  color: #bdb5c9;
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.partner-trust-note strong {
+  color: #fff;
+}
+
+.partner-form {
+  background: rgba(7, 5, 12, 0.7);
+}
+
+.partners-page-section {
+  min-height: 100vh;
+  padding-top: 10rem;
+}
+
+.nav-links a[aria-current="page"] {
+  color: #fff;
+  background: rgba(168, 85, 247, 0.14);
 }
 
 /* === CONTACT === */
@@ -1500,6 +1723,15 @@ main,
     grid-template-columns: 1fr;
   }
 
+  .partners-intro,
+  .partner-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .partner-form-copy {
+    position: static;
+  }
+
   .contact-copy {
     position: static;
   }
@@ -1610,6 +1842,7 @@ main,
   .enterprise-section,
   .products-section,
   .sectors-section,
+  .partners-section,
   .contact-section {
     padding: 4.2rem 1rem;
   }
@@ -1626,8 +1859,22 @@ main,
 
   .ai-grid,
   .ai-process,
+  .partner-steps,
   .form-row {
     grid-template-columns: 1fr;
+  }
+
+  .partners-copy h1 {
+    font-size: 2.35rem;
+  }
+
+  .partners-page-section {
+    padding-top: 7.5rem;
+  }
+
+  .partner-panel {
+    padding: 1.25rem;
+    border-radius: 22px;
   }
 
   .ai-card {

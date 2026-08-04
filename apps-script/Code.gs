@@ -1,10 +1,12 @@
 const LEADS_SHEET_NAME = 'Prospectos Devnex';
 const APPOINTMENTS_SHEET_NAME = 'Citas Devnex';
+const PARTNERS_SHEET_NAME = 'Partners Devnex';
 const ERRORS_SHEET_NAME = 'Errores Devnex';
 const FALLBACK_TIMEZONE = 'America/Bogota';
 const APPOINTMENT_DURATION_MINUTES = 60;
 const REMINDER_MINUTES_BEFORE = 30;
 const DEVNEX_TEAM_EMAIL = 'elkin56ty@gmail.com';
+const DEVNEX_LOGO_URL = 'https://devnnex.github.io/Devnex/images/logoo.png';
 
 const LEAD_HEADERS = [
   'Timestamp',
@@ -50,6 +52,25 @@ const APPOINTMENT_HEADERS = [
   'Email equipo status'
 ];
 
+const PARTNER_HEADERS = [
+  'Timestamp',
+  'Partner ID',
+  'Nombre',
+  'Empresa u ocupacion',
+  'Email',
+  'Telefono',
+  'Ubicacion',
+  'Perfil partner',
+  'Oportunidades',
+  'Consentimiento',
+  'Origen',
+  'Pagina',
+  'User agent',
+  'Estado',
+  'Email partner status',
+  'Email equipo status'
+];
+
 const ERROR_HEADERS = [
   'Timestamp',
   'Scope',
@@ -65,7 +86,7 @@ function doGet(e) {
     return json_({
       ok: true,
       message: 'Sheets ready',
-      sheets: [LEADS_SHEET_NAME, APPOINTMENTS_SHEET_NAME, ERRORS_SHEET_NAME]
+      sheets: [LEADS_SHEET_NAME, APPOINTMENTS_SHEET_NAME, PARTNERS_SHEET_NAME, ERRORS_SHEET_NAME]
     });
   }
 
@@ -73,7 +94,7 @@ function doGet(e) {
     return json_({
       ok: true,
       message: 'Devnex lead endpoint online',
-      sheets: [LEADS_SHEET_NAME, APPOINTMENTS_SHEET_NAME, ERRORS_SHEET_NAME]
+      sheets: [LEADS_SHEET_NAME, APPOINTMENTS_SHEET_NAME, PARTNERS_SHEET_NAME, ERRORS_SHEET_NAME]
     });
   }
 
@@ -94,6 +115,11 @@ function doPost(e) {
 
   try {
     data = readPayload_(e);
+
+    if (normalize_(data.tipo_formulario) === 'partner') {
+      return handlePartnerPost_(sheets, data);
+    }
+
     validateLead_(data);
 
     const calendarResult = createCalendarAppointment_(data);
@@ -134,6 +160,36 @@ function doPost(e) {
       message: error.message || String(error)
     });
   }
+}
+
+function handlePartnerPost_(sheets, data) {
+  validatePartner_(data);
+  data.partner_id = createPartnerId_();
+
+  const emailResult = sendPartnerEmails_(data);
+  logEmailFailures_(sheets.errors, emailResult, data);
+
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) throw new Error('El servicio esta ocupado. Intenta de nuevo.');
+
+  let partnerRowNumber;
+  try {
+    partnerRowNumber = appendPartner_(sheets.partners, data, emailResult);
+  } finally {
+    lock.releaseLock();
+  }
+
+  return json_({
+    ok: true,
+    type: 'partner',
+    message: 'Partner guardado y correos procesados.',
+    partnerId: data.partner_id,
+    row: partnerRowNumber,
+    email: {
+      partner: emailResult.partner,
+      team: emailResult.team
+    }
+  });
 }
 
 function setup() {
@@ -188,11 +244,13 @@ function setupSheets_() {
 
   const leads = getOrCreateSheet_(spreadsheet, LEADS_SHEET_NAME, LEAD_HEADERS);
   const appointments = getOrCreateSheet_(spreadsheet, APPOINTMENTS_SHEET_NAME, APPOINTMENT_HEADERS);
+  const partners = getOrCreateSheet_(spreadsheet, PARTNERS_SHEET_NAME, PARTNER_HEADERS);
   const errors = getOrCreateSheet_(spreadsheet, ERRORS_SHEET_NAME, ERROR_HEADERS);
 
   return {
     leads: leads,
     appointments: appointments,
+    partners: partners,
     errors: errors
   };
 }
@@ -273,6 +331,31 @@ function appendAppointment_(sheet, leadRowNumber, data, calendarResult, emailRes
   sheet.getRange(sheet.getLastRow() + 1, 1, 1, row.length).setValues([row]);
 }
 
+function appendPartner_(sheet, data, emailResult) {
+  const rowNumber = sheet.getLastRow() + 1;
+  const row = [
+    new Date(),
+    data.partner_id,
+    data.nombre,
+    data.empresa,
+    data.email,
+    data.telefono,
+    data.ubicacion,
+    data.perfil_partner,
+    data.mensaje,
+    data.consentimiento,
+    data.origen,
+    data.pagina,
+    data.user_agent,
+    'Nuevo - por contactar',
+    emailResult.partner,
+    emailResult.team
+  ];
+
+  sheet.getRange(rowNumber, 1, 1, row.length).setValues([row]);
+  return rowNumber;
+}
+
 function createCalendarAppointment_(data) {
   const appointment = parseAppointment_(data.fecha_reunion, data.hora_reunion);
   const calendar = CalendarApp.getDefaultCalendar();
@@ -346,6 +429,35 @@ function sendTeamEmail_(data, calendarResult) {
     replyTo: data.email,
     body: teamEmailText_(data, calendarResult),
     htmlBody: teamEmailHtml_(data, calendarResult)
+  });
+}
+
+function sendPartnerEmails_(data) {
+  return {
+    partner: sendPartnerWelcomeEmail_(data),
+    team: sendPartnerTeamEmail_(data)
+  };
+}
+
+function sendPartnerWelcomeEmail_(data) {
+  return sendHtmlEmail_({
+    to: data.email,
+    subject: 'Bienvenido al programa de partners Devnex',
+    name: 'Devnex Partners',
+    replyTo: DEVNEX_TEAM_EMAIL,
+    body: partnerWelcomeEmailText_(data),
+    htmlBody: partnerWelcomeEmailHtml_(data)
+  });
+}
+
+function sendPartnerTeamEmail_(data) {
+  return sendHtmlEmail_({
+    to: DEVNEX_TEAM_EMAIL,
+    subject: 'Nuevo partner Devnex: ' + data.nombre + ' - ' + data.ubicacion,
+    name: 'Devnex Partners',
+    replyTo: data.email,
+    body: partnerTeamEmailText_(data),
+    htmlBody: partnerTeamEmailHtml_(data)
   });
 }
 
@@ -441,6 +553,40 @@ function teamEmailText_(data, calendarResult) {
   ].join('\n');
 }
 
+function partnerWelcomeEmailText_(data) {
+  return [
+    'Hola ' + data.nombre + ',',
+    '',
+    'Gracias por unirte al programa de partners de Devnex.',
+    'Recibimos tu registro correctamente con el identificador ' + data.partner_id + '.',
+    '',
+    'Pronto te contactaremos para conocerte, conversar sobre las oportunidades que puedes referir y explicarte cómo funciona la comisión según el valor de cada proyecto.',
+    '',
+    'Nos alegra contar contigo para conectar más negocios con tecnología que los ayude a crecer.',
+    '',
+    'Equipo Devnex'
+  ].join('\n');
+}
+
+function partnerTeamEmailText_(data) {
+  return [
+    'Nuevo registro en el programa de partners Devnex.',
+    '',
+    'Partner ID: ' + data.partner_id,
+    'Nombre: ' + data.nombre,
+    'Empresa u ocupacion: ' + (data.empresa || 'No indicada'),
+    'Email: ' + data.email,
+    'Telefono: ' + data.telefono,
+    'Ubicacion: ' + data.ubicacion,
+    'Perfil: ' + data.perfil_partner,
+    '',
+    'Oportunidades que podria referir:',
+    data.mensaje,
+    '',
+    'Pagina: ' + data.pagina
+  ].join('\n');
+}
+
 function customerEmailHtml_(data, calendarResult) {
   const safeName = escapeHtml_(data.nombre);
   const appointmentDate = escapeHtml_(formatHumanDate_(calendarResult.start));
@@ -493,12 +639,67 @@ function teamEmailHtml_(data, calendarResult) {
   );
 }
 
+function partnerWelcomeEmailHtml_(data) {
+  const safeName = escapeHtml_(data.nombre);
+  const partnerId = escapeHtml_(data.partner_id);
+
+  return emailShell_(
+    'Programa de partners',
+    'Bienvenido, ' + safeName,
+    [
+      '<p style="margin:0 0 18px;color:#42375f;font-size:16px;line-height:1.7;">Gracias por unirte al programa de partners de Devnex. Recibimos tu registro correctamente y nos alegra contar contigo para conectar más negocios con soluciones tecnológicas de alto impacto.</p>',
+      '<div style="margin:22px 0;padding:20px;border:1px solid #e4d8ff;border-radius:16px;background:linear-gradient(135deg,#fbf8ff,#f5fbff);">',
+      '<div style="margin-bottom:8px;color:#7c3aed;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;">Tu registro</div>',
+      '<div style="color:#170c2f;font-size:18px;font-weight:800;">' + partnerId + '</div>',
+      '<div style="margin-top:8px;color:#65567e;font-size:14px;line-height:1.55;">Conserva este identificador como referencia de tu solicitud.</div>',
+      '</div>',
+      '<h2 style="margin:24px 0 10px;color:#170c2f;font-size:20px;line-height:1.25;">¿Qué sigue ahora?</h2>',
+      '<p style="margin:0;color:#42375f;font-size:16px;line-height:1.7;">Pronto te contactaremos para conocerte, conversar sobre las oportunidades que puedes referir y explicarte cómo funciona la comisión según el valor de cada proyecto.</p>',
+      '<div style="margin:24px 0 0;padding:16px 18px;border-left:4px solid #a855f7;border-radius:0 14px 14px 0;background:#f8f3ff;color:#5b4778;font-size:14px;line-height:1.65;"><strong style="color:#27143f;">Juntos creamos oportunidades.</strong><br>Tú haces la conexión; Devnex acompaña el diagnóstico, la propuesta y la implementación.</div>',
+      '<p style="margin:24px 0 0;color:#6b5d85;font-size:14px;line-height:1.6;">Gracias por confiar en Devnex.<br><strong style="color:#27143f;">Equipo Devnex</strong></p>'
+    ].join('')
+  );
+}
+
+function partnerTeamEmailHtml_(data) {
+  const rows = [
+    ['Partner ID', data.partner_id],
+    ['Nombre', data.nombre],
+    ['Empresa u ocupacion', data.empresa || 'No indicada'],
+    ['Email', data.email],
+    ['Telefono', data.telefono],
+    ['Ubicacion', data.ubicacion],
+    ['Perfil', data.perfil_partner],
+    ['Pagina', data.pagina]
+  ].map(function(row) {
+    return '<tr><td style="padding:10px 0;color:#7b6b99;font-size:13px;vertical-align:top;">' + escapeHtml_(row[0]) + '</td><td style="padding:10px 0;color:#190d31;font-size:14px;font-weight:700;text-align:right;">' + escapeHtml_(row[1]) + '</td></tr>';
+  }).join('');
+
+  const emailLink = 'mailto:' + escapeAttribute_(data.email);
+  const phoneLink = 'https://wa.me/' + String(data.telefono || '').replace(/\D/g, '');
+
+  return emailShell_(
+    'Nuevo registro',
+    'Partner por contactar',
+    [
+      '<p style="margin:0 0 16px;color:#42375f;font-size:16px;line-height:1.65;">Se registro una nueva persona interesada en referir negocios a Devnex.</p>',
+      '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;margin:18px 0;border-top:1px solid #eadfff;border-bottom:1px solid #eadfff;">',
+      rows,
+      '</table>',
+      '<div style="margin:18px 0;padding:16px;border-radius:14px;background:#fbf8ff;color:#42375f;font-size:14px;line-height:1.65;"><strong style="color:#190d31;">Oportunidades que podria referir:</strong><br>' + escapeHtml_(data.mensaje).replace(/\n/g, '<br>') + '</div>',
+      '<a href="' + emailLink + '" style="display:inline-block;margin:4px 8px 0 0;padding:13px 18px;border-radius:999px;background:#7c3aed;color:#ffffff;text-decoration:none;font-weight:800;">Responder por correo</a>',
+      '<a href="' + escapeAttribute_(phoneLink) + '" style="display:inline-block;margin-top:4px;padding:13px 18px;border:1px solid #d8c8f5;border-radius:999px;color:#5b21b6;text-decoration:none;font-weight:800;">Contactar por WhatsApp</a>'
+    ].join('')
+  );
+}
+
 function emailShell_(eyebrow, title, content) {
   return [
     '<div style="margin:0;padding:0;background:#f5f0ff;font-family:Arial,Helvetica,sans-serif;">',
     '<div style="max-width:620px;margin:0 auto;padding:30px 16px;">',
     '<div style="border-radius:22px;overflow:hidden;background:#ffffff;box-shadow:0 18px 50px rgba(42,18,92,.16);">',
-    '<div style="padding:26px 28px;background:#170c2f;color:#ffffff;">',
+    '<div style="padding:26px 28px;background:linear-gradient(135deg,#120623,#271047);color:#ffffff;">',
+    '<img src="' + escapeAttribute_(DEVNEX_LOGO_URL) + '" width="190" alt="Devnex" style="display:block;width:190px;max-width:72%;height:auto;margin:0 0 22px;border:0;">',
     '<div style="font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#d7c3ff;">' + escapeHtml_(eyebrow) + '</div>',
     '<h1 style="margin:8px 0 0;font-size:28px;line-height:1.15;color:#ffffff;">' + title + '</h1>',
     '</div>',
@@ -558,10 +759,13 @@ function readPayload_(e) {
   }
 
   return {
+    tipo_formulario: clean_(params.tipo_formulario),
     nombre: clean_(params.nombre),
     empresa: clean_(params.empresa),
     email: clean_(params.email),
     telefono: clean_(params.telefono),
+    ubicacion: clean_(params.ubicacion),
+    perfil_partner: clean_(params.perfil_partner),
     interes: clean_(params.interes),
     tamano_empresa: clean_(params.tamano_empresa),
     fecha_reunion: clean_(params.fecha_reunion),
@@ -598,6 +802,35 @@ function validateLead_(data) {
   if (!isValidEmail_(data.email)) {
     throw new Error('Correo electronico invalido.');
   }
+}
+
+function validatePartner_(data) {
+  const required = [
+    'nombre',
+    'email',
+    'telefono',
+    'ubicacion',
+    'perfil_partner',
+    'mensaje',
+    'consentimiento'
+  ];
+  const missing = required.filter(function(field) {
+    return !data[field];
+  });
+
+  if (missing.length) {
+    throw new Error('Campos requeridos faltantes: ' + missing.join(', '));
+  }
+
+  if (!isValidEmail_(data.email)) {
+    throw new Error('Correo electronico invalido.');
+  }
+}
+
+function createPartnerId_() {
+  const datePart = Utilities.formatDate(new Date(), getTimezone_(), 'yyyyMMdd');
+  const randomPart = Utilities.getUuid().replace(/-/g, '').slice(0, 6).toUpperCase();
+  return 'DNX-P-' + datePart + '-' + randomPart;
 }
 
 function buildCalendarEventUrl_(event, calendar) {

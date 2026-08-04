@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Únete al programa de partners de Devnex, refiere negocios que necesitan tecnología y recibe una comisión según el valor del proyecto." />
+  <meta name="theme-color" content="#08000f" />
+  <title>Programa de Partners — Devnex</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <canvas id="particles"></canvas>
+
+  <header class="navbar">
+    <div class="nav-inner">
+      <a class="brand" href="index.html#inicio" aria-label="Ir al inicio de Devnex">
+        <img src="images/logoo.png" alt="DEVNEX Soluciones Tecnológicas" class="logo logo-lockup" />
+      </a>
+
+      <nav class="nav-links" aria-label="Navegación principal">
+        <button class="nav-close-btn" type="button" aria-label="Cerrar menú">&times;</button>
+        <a href="index.html#nomina">Nosotros</a>
+        <a href="index.html#agentes-ia">Agentes IA</a>
+
+        <div class="nav-dropdown">
+          <button class="nav-dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+            Sistemas Empresariales
+          </button>
+          <div class="nav-dropdown-menu">
+            <a href="index.html#sistemas-empresariales">Sistemas Empresariales</a>
+            <a href="index.html#sistema-caja">Sistemas de caja</a>
+            <a href="index.html#sistema-restaurantes">Sistemas para Restaurantes</a>
+            <a href="index.html#sistema-lavadero">Sistemas para Lavadero de Autos</a>
+            <a href="index.html#sistema-pedidos">Sistemas de Pedidos en Línea</a>
+          </div>
+        </div>
+
+        <a href="index.html#products">Sistemas</a>
+        <a href="index.html#sectores">Sectores</a>
+        <a href="partners.html" aria-current="page">Afiliados</a>
+        <a href="index.html#contacto" class="cta">Contacto</a>
+      </nav>
+
+      <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="partners-main">
+    <section class="partners-section partners-page-section">
+      <div class="container">
+        <div class="partners-intro">
+          <div class="partners-copy">
+            <span class="section-kicker">Programa de partners Devnex</span>
+            <h1>Conecta negocios con tecnología y recibe una comisión</h1>
+            <p>
+              Si conoces empresas que necesitan software, automatización o agentes de IA, conviértete en partner de Devnex. Tú haces la conexión y nosotros nos encargamos del diagnóstico, la propuesta y la implementación.
+            </p>
+          </div>
+          <div class="partner-commission-card" aria-label="Beneficio del programa de partners">
+            <span class="partner-card-label">Tu beneficio</span>
+            <strong>Comisión por cada proyecto referido y cerrado</strong>
+            <p>El valor se define según el alcance y valor final del proyecto. Te explicaremos las condiciones antes de activar tu primera referencia.</p>
+          </div>
+        </div>
+
+        <div class="partner-steps" aria-label="Cómo funciona el programa de partners">
+          <article>
+            <span>01</span>
+            <h2>Regístrate</h2>
+            <p>Cuéntanos quién eres y cómo conectas con negocios.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h2>Refiere una oportunidad</h2>
+            <p>Presenta empresas que puedan beneficiarse de una solución Devnex.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h2>Recibe tu comisión</h2>
+            <p>Si el proyecto se contrata y paga, reconocemos tu participación según su valor.</p>
+          </article>
+        </div>
+
+        <div class="partner-panel">
+          <div class="partner-form-copy">
+            <span class="partner-form-eyebrow">Solicitud de afiliación</span>
+            <h2>Quiero ser partner</h2>
+            <p>Déjanos tus datos. Recibirás una confirmación por correo y nuestro equipo te contactará para conversar sobre el programa.</p>
+            <div class="partner-trust-note">
+              <span aria-hidden="true">✓</span>
+              <p><strong>Sin compromiso.</strong> Revisamos cada perfil personalmente antes de iniciar.</p>
+            </div>
+          </div>
+
+          <form class="lead-form partner-form" id="partner-form" data-endpoint="" novalidate>
+            <div class="form-row">
+              <label>Nombre completo<input type="text" name="nombre" autocomplete="name" required></label>
+              <label>Correo electrónico<input type="email" name="email" autocomplete="email" required></label>
+            </div>
+            <div class="form-row">
+              <label>WhatsApp / teléfono<input type="tel" name="telefono" autocomplete="tel" required></label>
+              <label>Ciudad y país<input type="text" name="ubicacion" autocomplete="address-level2" placeholder="Ej. Bogotá, Colombia" required></label>
+            </div>
+            <div class="form-row">
+              <label>Empresa u ocupación<input type="text" name="empresa" autocomplete="organization" placeholder="Opcional"></label>
+              <label>
+                ¿Cómo conoces negocios?
+                <select name="perfil_partner" required>
+                  <option value="">Selecciona una opción</option>
+                  <option>Consultoría o servicios profesionales</option>
+                  <option>Ventas o desarrollo de negocios</option>
+                  <option>Comunidad o creación de contenido</option>
+                  <option>Networking empresarial</option>
+                  <option>Cliente o contacto de Devnex</option>
+                  <option>Otro perfil</option>
+                </select>
+              </label>
+            </div>
+            <label>Cuéntanos sobre las oportunidades que podrías referir<textarea name="mensaje" rows="4" placeholder="Tipo de negocios, sector o necesidad que has identificado." required></textarea></label>
+            <label class="consent">
+              <input type="checkbox" name="consentimiento" value="Acepto" required>
+              <span>Acepto que Devnex guarde estos datos y me contacte sobre el programa de partners. He leído la <a href="privacidad.html">política de privacidad</a>.</span>
+            </label>
+            <input type="hidden" name="tipo_formulario" value="partner">
+            <input type="hidden" name="origen" value="devnex-web-partners">
+            <button class="btn-primary form-submit" type="submit">Enviar mi solicitud</button>
+            <p class="form-status" id="partner-form-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo-row">
+          <img src="images/logo.png" alt="Devnex logo" class="footer-logo" loading="lazy" decoding="async" />
+          <div>
+            <strong>Devnex</strong>
+            <span>Soluciones tecnológicas premium</span>
+          </div>
+        </div>
+        <p>Desarrollo de software, sistemas empresariales, automatización y plataformas web para empresas que quieren operar con más control.</p>
+        <div class="muted small">© <span id="year">2026</span> Devnex. Todos los derechos reservados.</div>
+      </div>
+
+      <div class="footer-col">
+        <strong>Empresa</strong>
+        <a href="index.html#nomina">Nosotros</a>
+        <a href="index.html#agentes-ia">Agentes IA</a>
+        <a href="index.html#products">Sistemas</a>
+      </div>
+
+      <div class="footer-col">
+        <strong>Contacto</strong>
+        <a class="whatsapp-link" href="#" target="_blank" rel="noopener">WhatsApp DEVNEX</a>
+        <a href="https://www.instagram.com/devnex.bca" target="_blank" rel="noopener">@devnex.bca</a>
+        <a href="index.html#contacto">Solicitar asesoría</a>
+      </div>
+
+      <div class="footer-col">
+        <strong>Legal</strong>
+        <a href="privacidad.html">Política de privacidad</a>
+        <a href="terminos.html">Términos y condiciones</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
